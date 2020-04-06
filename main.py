@@ -8,7 +8,7 @@ import webbrowser
 import pyautogui
 from test import playSong
 
-engine = pyttsx3.init()
+engine = pyttsx3.init("dummy")
 sound = engine.getProperty('voices')
 print(sound)
 engine.setProperty('voice', sound[0].id)

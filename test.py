@@ -24,9 +24,16 @@ else:
     print ("Can't get token for", username)
 
 
-def playSong(song):
-    result = sp.search(song, 1, 0,"track")
+def playSongFromArtist(track, artist):
+    result = sp.search(q='artist:{} track:{}'.format(artist, track), limit = 1, offset = 0, type = "track")
     print(json.dumps(result, sort_keys=True, indent=4))
     trackURI = [result["tracks"]["items"][0]["uri"]]
     sp.start_playback(deviceID, None, trackURI)
+
+def playSong(track):
+    result = sp.search(q='track:{}'.format(track), limit = 1, offset = 0, type = "track")
+    print(json.dumps(result, sort_keys=True, indent=4))
+    trackURI = [result["tracks"]["items"][0]["uri"]]
+    sp.start_playback(deviceID, None, trackURI)
+
 
