@@ -6,9 +6,11 @@ import subprocess
 import datetime
 import webbrowser
 import pyautogui
+from test import playSong
 
 engine = pyttsx3.init()
 sound = engine.getProperty('voices')
+print(sound)
 engine.setProperty('voice', sound[0].id)
 
 
@@ -98,6 +100,9 @@ while True:
 		
 		if "suche" in text:
 			search(text)
+		
+		if "spiele" in text:
+			playSong(text.split("spiele")[1])
 
 		elif "screenshot" in text:
 			myScreenshot = pyautogui.screenshot()
