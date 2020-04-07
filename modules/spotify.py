@@ -4,11 +4,16 @@ import json
 from json.decoder import JSONDecodeError
 import spotipy
 import spotipy.util as util
+from configparser import  ConfigParser
 
-username = "koejer.sascha@gmail.com"
+settings_path = os.path.expandvars(R"C:\Users\$USERNAME\Documents\VoiceAssistant\settings.ini")
+config = ConfigParser()
+config.read(settings_path)
+
+username = config.get("Spotify", "username")
 scope = "user-read-private user-read-playback-state user-modify-playback-state"
-client_id = "1222d7149c7c49d28a567e5c856f3a6f"
-client_secret = "a0ad652efc8c4fe0935e5d531f224139"
+client_id = config.get("Spotify", "client_id")
+client_secret = config.get("Spotify", "client_secret")
 redirect_uri = "http://localhost/"
 
 token  = util.prompt_for_user_token(username, scope, client_id = client_id, client_secret = client_secret, redirect_uri = redirect_uri)
@@ -17,8 +22,7 @@ if token:
     sp = spotipy.Spotify(auth=token)
 
     devices = sp.devices()
-    print(json.dumps(devices, sort_keys=True, indent=4))
-    deviceID = devices["devices"][0]["id"]
+    deviceID = config.get("Spotify", "device_id")
 
 else:
     print ("Can't get token for", username)
@@ -26,14 +30,10 @@ else:
 
 def playSongFromArtist(track, artist):
     result = sp.search(q='artist:{} track:{}'.format(artist, track), limit = 1, offset = 0, type = "track")
-    print(json.dumps(result, sort_keys=True, indent=4))
     trackURI = [result["tracks"]["items"][0]["uri"]]
     sp.start_playback(deviceID, None, trackURI)
 
 def playSong(track):
     result = sp.search(q='track:{}'.format(track), limit = 1, offset = 0, type = "track")
-    print(json.dumps(result, sort_keys=True, indent=4))
     trackURI = [result["tracks"]["items"][0]["uri"]]
     sp.start_playback(deviceID, None, trackURI)
-
-

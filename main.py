@@ -6,13 +6,35 @@ import subprocess
 import datetime
 import webbrowser
 import pyautogui
+from configparser import  ConfigParser
+
+settings_folder = os.path.expandvars(R"C:\Users\$USERNAME\Documents\VoiceAssistant")
+settings_path = os.path.expandvars(R"C:\Users\$USERNAME\Documents\VoiceAssistant\settings.ini")
+config = ConfigParser()
+
+if os.path.isfile(settings_path) != True:
+    config["Spotify"] = {
+        "username" : "",
+		"client_id" : "",
+		"client_secret" : "",
+		"device_id" : ""
+    }
+
+	
+    if os.path.exists(settings_folder) != True:
+        os.mkdir(os.path.expandvars(settings_folder))
+    with open(settings_path, "w") as configfile:
+        config.write(configfile)
+
+config.read(settings_path)
+
 from modules import spotify
+
+os.remove(".cache-{}".format(config.get("Spotify", "username")))
 
 engine = pyttsx3.init("dummy")
 sound = engine.getProperty('voices')
-print(sound)
 engine.setProperty('voice', sound[0].id)
-
 
 wake = "friday"
 
@@ -48,21 +70,11 @@ def note(text):
 	say("Ich habe die Notiz gespeichert")
 
 def startProgram(text):
-	if "discord" in text:
-		#os.path.expandvars(r"C:\Users\$USERNAME\Documents\YTDownloader")
-		subprocess.Popen(os.path.expandvars(R"C:\Users\$USERNAME\AppData\Local\Discord\app-0.0.306\Discord.exe"))
-		say("Discord wird gestartet")
-		return
-
-	elif "steam" in text:
-		subprocess.Popen(r"D:\Programme\Steam\Steam.exe")
-		say("Steam wird gestartet")
-		return
-
-	elif "youtube" in text:
-		webbrowser.open("https://www.youtube.com/feed/subscriptions", new=2)
-		say("YouTube wird geöfnet")
-		return
+	for key in config["Programs"]:
+		if key in text:
+			subprocess.Popen(str(config.get("Programs", key)))
+			say(str(key) +  " wird gestartet")
+			return
 
 	else:
 		say("Ich konnte das Programm nicht finden")
@@ -100,9 +112,18 @@ while True:
 		
 		if "suche" in text:
 			search(text)
-		
-		if "spiele" in text:
+
+		elif "spiele" and "von" in text:
+			track = text.split("spiele")[1]
+			track = track.split("von")[0]
+			artist = text.split()
+			artist = artist[-1]
+			print(track)
+			spotify.playSongFromArtist(track, artist)
+
+		elif "spiele" in text:
 			spotify.playSong(text.split("spiele")[1])
+
 
 		elif "screenshot" in text:
 			myScreenshot = pyautogui.screenshot()
@@ -111,6 +132,9 @@ while True:
 			text = get_audio()
 			if text == "ja":
 				os.startfile(r'C:\Users\koeje\Pictures\Screenshots')
+
+		elif "einstellungen" in text:
+			os.startfile(settings_path)
 
 		elif "e-mail" in text:
 			webbrowser.open("https://mail.google.com/mail/u/0/#inbox", new=2)
