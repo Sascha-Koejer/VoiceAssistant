@@ -6,7 +6,7 @@ import subprocess
 import datetime
 import webbrowser
 import pyautogui
-from test import playSong
+from modules import spotify
 
 engine = pyttsx3.init("dummy")
 sound = engine.getProperty('voices')
@@ -102,7 +102,7 @@ while True:
 			search(text)
 		
 		if "spiele" in text:
-			playSong(text.split("spiele")[1])
+			spotify.playSong(text.split("spiele")[1])
 
 		elif "screenshot" in text:
 			myScreenshot = pyautogui.screenshot()

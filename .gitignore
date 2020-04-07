@@ -1,0 +1,4 @@
+__pychache__/
+modules/__pychache__/
+.cache.*
+VoiceAssistant.bat
