@@ -4,6 +4,7 @@ import json
 from json.decoder import JSONDecodeError
 import spotipy
 import spotipy.util as util
+import time
 from configparser import  ConfigParser
 
 settings_path = os.path.expandvars(R"C:\Users\$USERNAME\Documents\VoiceAssistant\settings.ini")
@@ -14,7 +15,7 @@ username = config.get("Spotify", "username")
 scope = "user-read-private user-read-playback-state user-modify-playback-state"
 client_id = config.get("Spotify", "client_id")
 client_secret = config.get("Spotify", "client_secret")
-redirect_uri = "http://localhost/"
+redirect_uri = "https://www.google.de"
 
 token  = util.prompt_for_user_token(username, scope, client_id = client_id, client_secret = client_secret, redirect_uri = redirect_uri)
 
@@ -37,3 +38,14 @@ def playSong(track):
     result = sp.search(q='track:{}'.format(track), limit = 1, offset = 0, type = "track")
     trackURI = [result["tracks"]["items"][0]["uri"]]
     sp.start_playback(deviceID, None, trackURI)
+
+def stopSong():
+    sp.pause_playback()
+
+def previousSong():
+    sp.previous_track()
+
+def change_device(newDeviceID):
+    transfer_playback(newDeviceID, force_play=True)
+
+

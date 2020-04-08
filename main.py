@@ -30,7 +30,6 @@ config.read(settings_path)
 
 from modules import spotify
 
-os.remove(".cache-{}".format(config.get("Spotify", "username")))
 
 engine = pyttsx3.init("dummy")
 sound = engine.getProperty('voices')
@@ -118,12 +117,16 @@ while True:
 			track = track.split("von")[0]
 			artist = text.split()
 			artist = artist[-1]
-			print(track)
 			spotify.playSongFromArtist(track, artist)
 
 		elif "spiele" in text:
 			spotify.playSong(text.split("spiele")[1])
 
+		elif "stop" in text:
+			spotify.stopSong()
+
+		elif "vorheriges" in text:
+			spotify.previousSong()
 
 		elif "screenshot" in text:
 			myScreenshot = pyautogui.screenshot()
@@ -136,7 +139,7 @@ while True:
 		elif "einstellungen" in text:
 			os.startfile(settings_path)
 
-		elif "e-mail" in text:
+		elif ("e-mail" in text) or ("email" in text):
 			webbrowser.open("https://mail.google.com/mail/u/0/#inbox", new=2)
 			
 		elif "speedtest" in text:
