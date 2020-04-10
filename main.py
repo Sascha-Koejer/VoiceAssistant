@@ -1,4 +1,5 @@
 import os
+import sys
 import time
 import speech_recognition as sr
 import pyttsx3
@@ -13,13 +14,23 @@ settings_path = os.path.expandvars(R"C:\Users\$USERNAME\Documents\VoiceAssistant
 config = ConfigParser()
 
 if os.path.isfile(settings_path) != True:
+    config["General"] = {
+        "FolderToSort" : "path"
+    }
+    config["Programs"] = {
+        "name" : "path"
+    }
+    config["SpotifyDevices"] = {
+	    "name" : "device_id"
+    }
     config["Spotify"] = {
         "username" : "",
 		"client_id" : "",
-		"client_secret" : "",
-		"device_id" : ""
+		"client_secret" : ""
     }
-
+    config["SortingFolders"] = {
+	    "folder_name" : "file_extensions"
+    }
 	
     if os.path.exists(settings_folder) != True:
         os.mkdir(os.path.expandvars(settings_folder))
@@ -29,20 +40,20 @@ if os.path.isfile(settings_path) != True:
 config.read(settings_path)
 
 from modules import spotify
+from modules import filesorting as fs
 
-
-engine = pyttsx3.init("dummy")
+engine = pyttsx3.init()
 sound = engine.getProperty('voices')
 engine.setProperty('voice', sound[0].id)
 
 wake = "friday"
+
 
 def get_audio():
 		r = sr.Recognizer()
 		with sr.Microphone() as source:
 			audio = r.listen(source)
 			said = ""
-
 			try:
 				said = r.recognize_google(audio, language="de_DE")
 				print(said)
@@ -128,6 +139,23 @@ while True:
 		elif "vorheriges" in text:
 			spotify.previousSong()
 
+		elif "neustart" in text:
+			config.read(settings_path)
+
+		elif "wechsel" in text:
+			spotify.changeDevice(text)
+
+		elif "lauter" in text:
+			spotify.changeVolume("+")
+
+		elif "leiser" in text:
+			spotify.changeVolume("-")
+
+		elif "lautstärke" in text:
+			volume = text.split("lautstärke")[1]
+			volume = volume.split(" ")[1]
+			spotify.setVolume(volume)
+
 		elif "screenshot" in text:
 			myScreenshot = pyautogui.screenshot()
 			myScreenshot.save(r'C:\Users\koeje\Pictures\Screenshots\{}.png'.format(dateNow()))
@@ -141,6 +169,12 @@ while True:
 
 		elif ("e-mail" in text) or ("email" in text):
 			webbrowser.open("https://mail.google.com/mail/u/0/#inbox", new=2)
+		
+		elif "räum auf" in text:
+			fs.cleanUp()
+
+		elif "abschalten" in text:
+			sys.exit()
 			
 		elif "speedtest" in text:
 			os.system("start cmd /k speedtest-cli")
