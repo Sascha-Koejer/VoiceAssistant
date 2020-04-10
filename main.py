@@ -46,7 +46,7 @@ engine = pyttsx3.init()
 sound = engine.getProperty('voices')
 engine.setProperty('voice', sound[0].id)
 
-wake = "friday"
+wake = ["friday", "3D", "Scheide", "Kreide", "schade"]
 
 
 def get_audio():
@@ -97,86 +97,102 @@ def search(text):
 		webbrowser.open("https://www.youtube.com/results?search_query={}".format(text.split("nach")[1]), new=2)
 	elif "suche" in text:
 		webbrowser.open("https://www.google.com/search?q={}".format(text.split("nach")[1]), new=2)
+	say("Ich habe die Suche gestartet")
 
 while True:
 	print("Listening")
 	text = get_audio()
 
-	if wake in text:
+	for activation in wake:
+		if activation.lower() in text:
 
-		if text == wake:
-			say("Wie kann ich helfen?")
-			text = get_audio()
+			if text == activation.lower():
+				say("Wie kann ich helfen?")
+				text = get_audio()
 
-		noteActivation = ["schreib", "notiz"]
-		for word in noteActivation:
-			if word in text:
-				say("Was soll ich aufschreiben?")
-				note_text = get_audio()
-				note(note_text)
-		
-		programActivation = ["start", "öffne"]
-		for word in programActivation:
-			if word in text:
-				startProgram(text)
-		
-		if "suche" in text:
-			search(text)
-
-		elif "spiele" and "von" in text:
-			track = text.split("spiele")[1]
-			track = track.split("von")[0]
-			artist = text.split()
-			artist = artist[-1]
-			spotify.playSongFromArtist(track, artist)
-
-		elif "spiele" in text:
-			spotify.playSong(text.split("spiele")[1])
-
-		elif "stop" in text:
-			spotify.stopSong()
-
-		elif "vorheriges" in text:
-			spotify.previousSong()
-
-		elif "neustart" in text:
-			config.read(settings_path)
-
-		elif "wechsel" in text:
-			spotify.changeDevice(text)
-
-		elif "lauter" in text:
-			spotify.changeVolume("+")
-
-		elif "leiser" in text:
-			spotify.changeVolume("-")
-
-		elif "lautstärke" in text:
-			volume = text.split("lautstärke")[1]
-			volume = volume.split(" ")[1]
-			spotify.setVolume(volume)
-
-		elif "screenshot" in text:
-			myScreenshot = pyautogui.screenshot()
-			myScreenshot.save(r'C:\Users\koeje\Pictures\Screenshots\{}.png'.format(dateNow()))
-			say("Der Screenshot wurde gespeichert. Soll ich den Ordner öffnen?")
-			text = get_audio()
-			if text == "ja":
-				os.startfile(r'C:\Users\koeje\Pictures\Screenshots')
-
-		elif "einstellungen" in text:
-			os.startfile(settings_path)
-
-		elif ("e-mail" in text) or ("email" in text):
-			webbrowser.open("https://mail.google.com/mail/u/0/#inbox", new=2)
-		
-		elif "räum auf" in text:
-			fs.cleanUp()
-
-		elif "abschalten" in text:
-			sys.exit()
+			noteActivation = ["schreib", "notiz"]
+			for word in noteActivation:
+				if word in text:
+					say("Was soll ich aufschreiben?")
+					note_text = get_audio()
+					note(note_text)
 			
-		elif "speedtest" in text:
-			os.system("start cmd /k speedtest-cli")
+			if "neustart" in text:
+				config.read(settings_path)
+				say("Ich habe alle Einstellungen neu geladen")
+
+			programActivation = ["starte", "öffne"]
+			for word in programActivation:
+				if word in text:
+					startProgram(text)
+			
+			if "suche" in text:
+				search(text)
+
+			elif "spiele" and "von" in text:
+				track = text.split("spiele")[1]
+				track = track.split("von")[0]
+				artist = text.split()
+				artist = artist[-1]
+				spotify.playSongFromArtist(track, artist)
+				say("Ich spiele das Lied")
+
+			elif "spiele" in text:
+				spotify.playSong(text.split("spiele")[1])
+				say("Ich spiele das Lied")
+
+			elif "stop" in text:
+				spotify.stopSong()
+				say("Ich habe die Wiedergabe beendet")
+
+			elif "vorheriges" in text:
+				spotify.previousSong()
+				say("Das vorherige Lied wird gespielt")
+
+			elif "wechsel" in text:
+				spotify.changeDevice(text)
+				say("Ich habe die Wiedergabe geändert")
+
+			elif "lauter" in text:
+				spotify.changeVolume("+")
+				say("Lautstärke wurde erhöht")
+
+			elif "leiser" in text:
+				spotify.changeVolume("-")
+				say("Lautstärke wurde gesenkt")
+
+			elif "lautstärke" in text:
+				volume = text.split("lautstärke")[1]
+				volume = volume.split(" ")[1]
+				spotify.setVolume(volume)
+				say("Ich habe die Lautstärke angepasst")
+
+			elif "screenshot" in text:
+				myScreenshot = pyautogui.screenshot()
+				myScreenshot.save(r'C:\Users\koeje\Pictures\Screenshots\{}.png'.format(dateNow()))
+				say("Der Screenshot wurde gespeichert. Soll ich den Ordner öffnen?")
+				text = get_audio()
+				if text == "ja":
+					os.startfile(r'C:\Users\koeje\Pictures\Screenshots')
+
+			elif "einstellungen" in text:
+				os.startfile(settings_path)
+				say("Hier sind meine Einstellungen")
+
+			elif ("e-mail" in text) or ("email" in text):
+				webbrowser.open("https://mail.google.com/mail/u/0/#inbox", new=2)
+				say("E-Mails werden geöffnet")
+			
+			elif "räum auf" in text:
+				fs.cleanUp()
+				say("Ich habe den Ordner sortiert")
+
+			elif "abschalten" in text:
+				say("Bis bald")
+				sys.exit()
+				
+			elif "speedtest" in text:
+				say("Speedtest wird gestartet")
+				os.system("start cmd /k speedtest-cli")
 
 			
