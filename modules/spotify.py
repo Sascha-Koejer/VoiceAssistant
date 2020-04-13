@@ -6,7 +6,8 @@ import spotipy
 import spotipy.util as util
 import time
 from configparser import  ConfigParser
-import win32gui, win32con
+import win32gui, win32con 
+import psutil   
 import subprocess
 
 settings_path = os.path.expandvars(R"C:\Users\$USERNAME\Documents\VoiceAssistant\settings.ini")
@@ -19,14 +20,16 @@ client_id = config.get("Spotify", "client_id")
 client_secret = config.get("Spotify", "client_secret")
 deviceID = config.items("SpotifyDevices")[0][1]
 redirect_uri = "https://www.google.de"
-
 token = util.prompt_for_user_token(username, scope, client_id = client_id, client_secret = client_secret, redirect_uri = redirect_uri)
 #hideWindow = win32gui.GetForegroundWindow()
 #win32gui.ShowWindow(hideWindow , win32con.SW_HIDE)
 
 if token:
     sp = spotipy.Spotify(auth=token)
-    subprocess.Popen(os.path.expandvars(R"C:\Users\$USERNAME\AppData\Roaming\Spotify\Spotify.exe"))
+    if "Spotify.exe" not in (p.name() for p in psutil.process_iter()):
+        print("Spotify not detected...")
+        print("Starting Spotify...")
+        subprocess.Popen(config.get("General", "spotify_exe_path"))
 else:
     print ("Can't get token for", username)
 
