@@ -147,9 +147,14 @@ while True:
 				spotify.stopSong()
 				say("Ich habe die Wiedergabe beendet")
 
+			elif ("trello" in text) or ("todo" in text) or ("to do" in text):
+				webbrowser.open("https://trello.com/b/X88LPiux/voiceassistant", new=2) 
+
 			elif "vorheriges" in text:
-				spotify.previousSong()
-				say("Das vorherige Lied wird gespielt")
+				if spotify.previousSong() == True:
+					say("Das vorherige Lied wird gespielt")
+				elif spotify.previousSong() == False:
+					say("Ich konnte kein vorheriges Lied finden")
 
 			elif "wechsel" in text:
 				spotify.changeDevice(text)

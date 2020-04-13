@@ -6,7 +6,8 @@ import spotipy
 import spotipy.util as util
 import time
 from configparser import  ConfigParser
-#import win32gui, win32con
+import win32gui, win32con
+import subprocess
 
 settings_path = os.path.expandvars(R"C:\Users\$USERNAME\Documents\VoiceAssistant\settings.ini")
 config = ConfigParser()
@@ -25,6 +26,7 @@ token = util.prompt_for_user_token(username, scope, client_id = client_id, clien
 
 if token:
     sp = spotipy.Spotify(auth=token)
+    subprocess.Popen(os.path.expandvars(R"C:\Users\$USERNAME\AppData\Roaming\Spotify\Spotify.exe"))
 else:
     print ("Can't get token for", username)
 
@@ -43,7 +45,11 @@ def stopSong():
     sp.pause_playback()
 
 def previousSong():
-    sp.previous_track()
+    try:
+        sp.previous_track()
+        return True
+    except BaseException as err:
+        return False
 
 def changeDevice(text):
     global deviceID
@@ -82,6 +88,4 @@ def setVolume(change):
     elif change == "zehn":
         sp.volume(100, deviceID)
     
-
-
 
