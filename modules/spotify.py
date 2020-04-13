@@ -6,7 +6,7 @@ import spotipy
 import spotipy.util as util
 import time
 from configparser import  ConfigParser
-import win32gui, win32con
+#import win32gui, win32con
 
 settings_path = os.path.expandvars(R"C:\Users\$USERNAME\Documents\VoiceAssistant\settings.ini")
 config = ConfigParser()
@@ -20,7 +20,7 @@ deviceID = config.items("SpotifyDevices")[0][1]
 redirect_uri = "https://www.google.de"
 
 token = util.prompt_for_user_token(username, scope, client_id = client_id, client_secret = client_secret, redirect_uri = redirect_uri)
-hideWindow = win32gui.GetForegroundWindow()
+#hideWindow = win32gui.GetForegroundWindow()
 #win32gui.ShowWindow(hideWindow , win32con.SW_HIDE)
 
 if token:

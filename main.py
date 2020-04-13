@@ -15,10 +15,12 @@ config = ConfigParser()
 
 if os.path.isfile(settings_path) != True:
     config["General"] = {
-        "FolderToSort" : "path"
+        "FolderToSort" : "path",
+		"ScreenshotFolder" : "path",
+		"SpotifyExePath" : ""
     }
     config["Programs"] = {
-        "name" : "path"
+        "name" : "ExePath"
     }
     config["SpotifyDevices"] = {
 	    "name" : "device_id"
@@ -42,7 +44,7 @@ config.read(settings_path)
 from modules import spotify
 from modules import filesorting as fs
 
-engine = pyttsx3.init()
+engine = pyttsx3.init("dummy")
 sound = engine.getProperty('voices')
 engine.setProperty('voice', sound[0].id)
 
@@ -169,11 +171,11 @@ while True:
 
 			elif "screenshot" in text:
 				myScreenshot = pyautogui.screenshot()
-				myScreenshot.save(r'C:\Users\koeje\Pictures\Screenshots\{}.png'.format(dateNow()))
+				myScreenshot.save(config.get("General", "screenshotfolder") + "\{}.png".format(dateNow()))
 				say("Der Screenshot wurde gespeichert. Soll ich den Ordner öffnen?")
 				text = get_audio()
 				if text == "ja":
-					os.startfile(r'C:\Users\koeje\Pictures\Screenshots')
+					os.startfile(config.get("General", "screenshotfolder"))
 
 			elif "einstellungen" in text:
 				os.startfile(settings_path)
