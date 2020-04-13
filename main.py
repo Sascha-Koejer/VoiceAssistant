@@ -15,12 +15,12 @@ config = ConfigParser()
 
 if os.path.isfile(settings_path) != True:
     config["General"] = {
-        "FolderToSort" : "path",
-		"ScreenshotFolder" : "path",
-		"SpotifyExePath" : ""
+        "Folder_To_Sort" : "path",
+		"Screenshot_Folder" : "path",
+		"Spotify_Exe_Path" : "path"
     }
     config["Programs"] = {
-        "name" : "ExePath"
+        "name" : "Exe_Path"
     }
     config["SpotifyDevices"] = {
 	    "name" : "device_id"
@@ -44,7 +44,7 @@ config.read(settings_path)
 from modules import spotify
 from modules import filesorting as fs
 
-engine = pyttsx3.init("dummy")
+engine = pyttsx3.init()
 sound = engine.getProperty('voices')
 engine.setProperty('voice', sound[0].id)
 
@@ -147,9 +147,6 @@ while True:
 				spotify.stopSong()
 				say("Ich habe die Wiedergabe beendet")
 
-			elif ("trello" in text) or ("todo" in text) or ("to do" in text):
-				webbrowser.open("https://trello.com/b/X88LPiux/voiceassistant", new=2) 
-
 			elif "vorheriges" in text:
 				if spotify.previousSong() == True:
 					say("Das vorherige Lied wird gespielt")
@@ -176,11 +173,11 @@ while True:
 
 			elif "screenshot" in text:
 				myScreenshot = pyautogui.screenshot()
-				myScreenshot.save(config.get("General", "screenshotfolder") + "\{}.png".format(dateNow()))
+				myScreenshot.save(config.get("General", "screenshot_folder") + "\{}.png".format(dateNow()))
 				say("Der Screenshot wurde gespeichert. Soll ich den Ordner öffnen?")
 				text = get_audio()
 				if text == "ja":
-					os.startfile(config.get("General", "screenshotfolder"))
+					os.startfile(config.get("General", "screenshot_folder"))
 
 			elif "einstellungen" in text:
 				os.startfile(settings_path)
