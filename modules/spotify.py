@@ -44,15 +44,14 @@ def playSong(track):
     trackURI = [result["tracks"]["items"][0]["uri"]]
     sp.start_playback(deviceID, None, trackURI)
 
+def nextSong():
+    sp.next_track(device_id = deviceID)
+
 def stopSong():
     sp.pause_playback()
 
 def previousSong():
-    try:
-        sp.previous_track()
-        return True
-    except BaseException as err:
-        return False
+    sp.previous_track()
 
 def changeDevice(text):
     global deviceID
@@ -91,4 +90,9 @@ def setVolume(change):
     elif change == "zehn":
         sp.volume(100, deviceID)
     
-
+def playPlaylist(playlist):
+    result = sp.search(playlist, limit=1, offset=0,type="playlist")
+    playlistURI = result["playlists"]["items"][0]["uri"]
+    sp.start_playback(deviceID, context_uri = playlistURI)
+    sp.repeat(state="context", device_id = deviceID)
+    sp.shuffle(state = True, device_id = deviceID)

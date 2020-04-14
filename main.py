@@ -131,6 +131,10 @@ while True:
 			if "suche" in text:
 				search(text)
 
+			elif "playlist" in text:
+				playlist = text.strip().split("playlist")[1]
+				spotify.playPlaylist(playlist)
+
 			elif "spiele" and "von" in text:
 				track = text.split("spiele")[1]
 				track = track.split("von")[0]
